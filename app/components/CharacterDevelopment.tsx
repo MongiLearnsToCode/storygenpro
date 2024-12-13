@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
+import { generateOutline } from '../services/groqService'
 
 interface CharacterProfile {
   name: string;
@@ -12,6 +13,11 @@ interface CharacterProfile {
   personality: string;
   goals: string;
   conflicts: string;
+}
+
+async function generateCharacterContent(prompt: string): Promise<string> {
+  const response = await generateOutline(prompt);
+  return response;
 }
 
 export function CharacterDevelopment() {
@@ -23,6 +29,7 @@ export function CharacterDevelopment() {
     goals: '',
     conflicts: ''
   })
+  const [isGenerating, setIsGenerating] = useState(false)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -30,6 +37,22 @@ export function CharacterDevelopment() {
       ...prev,
       [name]: value
     }))
+  }
+
+  const handleGeneratePersonality = async () => {
+    try {
+      setIsGenerating(true)
+      const prompt = `Generate a detailed personality description for a character named ${character.name} who plays the role of ${character.role}.
+      Include their key traits, behaviors, and how they typically react in different situations.
+      Format the response in clear sections with descriptive paragraphs.`
+      
+      const personalityText = await generateCharacterContent(prompt)
+      setCharacter(prev => ({ ...prev, personality: personalityText }))
+    } catch (error) {
+      console.error('Failed to generate personality:', error)
+    } finally {
+      setIsGenerating(false)
+    }
   }
 
   return (
@@ -79,6 +102,9 @@ export function CharacterDevelopment() {
               onChange={handleInputChange}
               placeholder="Character traits and behaviors"
             />
+            <Button onClick={handleGeneratePersonality} disabled={isGenerating}>
+              {isGenerating ? 'Generating...' : 'Generate Personality'}
+            </Button>
           </div>
           <div>
             <Label htmlFor="goals">Goals & Motivations</Label>
@@ -103,10 +129,20 @@ export function CharacterDevelopment() {
         </div>
       </div>
       <div className="panel-footer">
-        <Button variant="outline" onClick={() => setCharacter({ name: '', role: '', background: '', personality: '', goals: '', conflicts: '' })}>
+        <Button 
+          variant="outline" 
+          onClick={() => setCharacter({ 
+            name: '', 
+            role: '', 
+            background: '', 
+            personality: '', 
+            goals: '', 
+            conflicts: '' 
+          })}
+          disabled={isGenerating}
+        >
           Clear
         </Button>
-        <Button>Generate Character Profile</Button>
       </div>
     </div>
   )
