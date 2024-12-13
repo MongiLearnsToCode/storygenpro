@@ -12,25 +12,16 @@ export default function HarmonStructure() {
     setIsLoading(true)
     setError(null)
     try {
-      const prompt = `Generate a detailed story outline using Dan Harmon's Story Circle for a story with the following elements:
-      Protagonist: ${elements.protagonist}
-      Setting: ${elements.setting}
-      Genre: ${elements.genre}
-      Theme: ${elements.theme}
+      const storyElementsFormatted = {
+        title: `${elements.protagonist}'s Journey`,
+        genre: elements.genre,
+        premise: elements.theme,
+        characters: elements.protagonist,
+        setting: elements.setting,
+        outline: elements.freeWriting || ''
+      }
 
-      The outline should strictly follow these stages:
-      1. You (A character is in a zone of comfort)
-      2. Need (But they want something)
-      3. Go (They enter an unfamiliar situation)
-      4. Search (Adapt to it)
-      5. Find (Find what they wanted)
-      6. Take (Pay its price)
-      7. Return (And go back to where they started)
-      8. Change (Now capable of change)
-
-      For each stage, provide specific plot points, character development suggestions, and clear transitions. Ensure the outline maintains internal consistency and adheres to the chosen genre and theme.`
-
-      const generatedOutline = await generateOutline(prompt)
+      const generatedOutline = await generateOutline(storyElementsFormatted)
       setOutline(generatedOutline)
     } catch (err) {
       setError('Failed to generate outline. Please try again.')
@@ -70,4 +61,3 @@ export default function HarmonStructure() {
     </div>
   )
 }
-

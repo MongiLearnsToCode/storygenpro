@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Loader2 } from 'lucide-react'
 import InteractiveStoryStructure from './InteractiveStoryStructure'
-import CharacterDevelopment from './CharacterDevelopment'
+import { CharacterDevelopment } from './CharacterDevelopment'
 
 const haugueStages = [
   { name: "Setup", description: "Introduce the main character in their everyday life, establishing their identity, lifestyle, and core beliefs." },
@@ -28,6 +28,15 @@ export default function HaugueStructure() {
     setIsLoading(true)
     setError(null)
     try {
+      const storyElementsFormatted = {
+        title: `${elements.protagonist}'s Journey`,
+        genre: elements.genre,
+        premise: elements.theme,
+        characters: elements.protagonist,
+        setting: elements.setting,
+        outline: elements.freeWriting || ''
+      }
+
       const prompt = `Generate a detailed story outline using Michael Hauge's Six-Stage Plot Structure for a story with the following elements:
       Protagonist: ${elements.protagonist}
       Setting: ${elements.setting}
@@ -47,7 +56,7 @@ export default function HaugueStructure() {
 
       For each stage, provide specific plot points, character development suggestions, and clear transitions. Ensure the outline maintains internal consistency and adheres to the chosen genre and theme. Incorporate elements from the author's free writing where appropriate.`
 
-      const generatedOutline = await generateOutline(prompt)
+      const generatedOutline = await generateOutline(storyElementsFormatted)
       setOutline(generatedOutline)
     } catch (err) {
       setError('Failed to generate outline. Please try again.')
@@ -121,4 +130,3 @@ export default function HaugueStructure() {
     </motion.div>
   )
 }
-
