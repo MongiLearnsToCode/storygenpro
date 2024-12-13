@@ -5,8 +5,17 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 
+interface CharacterProfile {
+  name: string;
+  role: string;
+  background: string;
+  personality: string;
+  goals: string;
+  conflicts: string;
+}
+
 export function CharacterDevelopment() {
-  const [character, setCharacter] = useState({
+  const [character, setCharacter] = useState<CharacterProfile>({
     name: '',
     role: '',
     background: '',
@@ -16,10 +25,11 @@ export function CharacterDevelopment() {
   })
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setCharacter({
-      ...character,
-      [e.target.name]: e.target.value
-    })
+    const { name, value } = e.target;
+    setCharacter(prev => ({
+      ...prev,
+      [name]: value
+    }))
   }
 
   return (
