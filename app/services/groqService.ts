@@ -66,3 +66,39 @@ Make the outline detailed but concise.`
     throw new Error(error instanceof Error ? error.message : 'Failed to generate outline')
   }
 }
+
+export async function generateCharacterContent(prompt: string): Promise<string> {
+  if (!GROQ_API_KEY) {
+    throw new Error('GROQ_API_KEY is not configured')
+  }
+
+  const response = await fetch(GROQ_API_URL, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${GROQ_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'mixtral-8x7b-32768',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a creative writing assistant specializing in character development.'
+        },
+        {
+          role: 'user',
+          content: prompt
+        }
+      ],
+      temperature: 0.7,
+      max_tokens: 1000,
+    }),
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to generate character content')
+  }
+
+  const data = await response.json()
+  return data.choices[0].message.content
+}

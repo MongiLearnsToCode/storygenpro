@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
-import { generateOutline } from '../services/groqService'
+import { generateCharacterContent } from '../services/groqService'
 
 interface CharacterProfile {
   name: string;
@@ -13,11 +13,6 @@ interface CharacterProfile {
   personality: string;
   goals: string;
   conflicts: string;
-}
-
-async function generateCharacterContent(prompt: string): Promise<string> {
-  const response = await generateOutline(prompt);
-  return response;
 }
 
 export function CharacterDevelopment() {
@@ -40,6 +35,11 @@ export function CharacterDevelopment() {
   }
 
   const handleGeneratePersonality = async () => {
+    if (!character.name || !character.role) {
+      alert('Please enter character name and role first')
+      return
+    }
+
     try {
       setIsGenerating(true)
       const prompt = `Generate a detailed personality description for a character named ${character.name} who plays the role of ${character.role}.
@@ -50,6 +50,7 @@ export function CharacterDevelopment() {
       setCharacter(prev => ({ ...prev, personality: personalityText }))
     } catch (error) {
       console.error('Failed to generate personality:', error)
+      alert('Failed to generate personality. Please try again.')
     } finally {
       setIsGenerating(false)
     }
