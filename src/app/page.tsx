@@ -1,102 +1,116 @@
-import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { currentUser } from "@clerk/nextjs/server";
+import { ArrowRight, Feather, BookOpen, Bot } from "lucide-react";
+import Link from "next/link";
 
-export default function Home() {
+export default async function Home() {
+  const user = await currentUser();
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Header */}
+      <header className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+        <Link href="/" className="flex items-center gap-2">
+          <Feather className="h-6 w-6 text-blue-600" />
+          <h1 className="text-xl font-bold text-gray-800 dark:text-white">
+            StoryGenPro
+          </h1>
+        </Link>
+        <div>
+          {user ? (
+            <Link href="/dashboard">
+              <Button>Go to Dashboard</Button>
+            </Link>
+          ) : (
+            <div className="flex gap-2">
+              <Link href="/sign-in">
+                <Button variant="outline">Sign In</Button>
+              </Link>
+              <Link href="/sign-up">
+                <Button>Sign Up</Button>
+              </Link>
+            </div>
+          )}
         </div>
+      </header>
+
+      {/* Hero Section */}
+      <main className="flex-grow">
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+          <h2 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl text-gray-900 dark:text-white">
+            Build Your Story Like a Game
+          </h2>
+          <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-500 dark:text-gray-400">
+            Visual, addictive, and always yours. StoryGenPro helps you craft
+            compelling narratives with powerful tools and AI-driven insights.
+          </p>
+          <div className="mt-8">
+            <Link href={user ? "/dashboard" : "/sign-up"}>
+              <Button size="lg">
+                Get Started for Free
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <section className="bg-white dark:bg-gray-800 py-20">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h3 className="text-3xl font-bold">Features</h3>
+              <p className="text-gray-500 dark:text-gray-400">
+                Everything you need to bring your story to life.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <Card>
+                <CardHeader className="flex flex-col items-center text-center">
+                  <BookOpen className="h-10 w-10 text-blue-600 mb-4" />
+                  <CardTitle>Visual Story Planner</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <p>
+                    Organize your scenes, characters, and plot points on an
+                    interactive timeline. Drag, drop, and reorder with ease.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="flex flex-col items-center text-center">
+                  <Bot className="h-10 w-10 text-blue-600 mb-4" />
+                  <CardTitle>AI-Powered Analysis</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <p>
+                    Get insights on your story's pacing, character arcs, and
+                    potential plot holes with our Gemini-powered analyzer.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="flex flex-col items-center text-center">
+                  <Feather className="h-10 w-10 text-blue-600 mb-4" />
+                  <CardTitle>Gamified Writing</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <p>
+                    Stay motivated with daily streaks, achievements, and
+                    progress tracking. Make writing a rewarding habit.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      {/* Footer */}
+      <footer className="bg-gray-100 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-gray-500 dark:text-gray-400">
+          <p>&copy; {new Date().getFullYear()} StoryGenPro. All rights reserved.</p>
+        </div>
       </footer>
     </div>
   );
